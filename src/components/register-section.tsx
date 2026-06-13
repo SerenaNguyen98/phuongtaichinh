@@ -7,11 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useToast } from "@/components/ui/use-toast";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export function RegisterSection() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string }>({});
 
   const { toast } = useToast();
@@ -22,7 +25,7 @@ export function RegisterSection() {
     setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     const newErrors: typeof errors = {};
 
@@ -38,16 +41,35 @@ export function RegisterSection() {
       return;
     }
 
-    toast({
-      title: "Đăng ký thành công!",
-      description: "Đội ngũ tư vấn sẽ liên hệ trong 24h.",
-      variant: "success",
-    });
+    setLoading(true);
 
-    setName("");
-    setEmail("");
-    setPhone("");
-    setErrors({});
+    try {
+      await addDoc(collection(db, "customers"), {
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        createdAt: serverTimestamp(),
+      });
+
+      toast({
+        title: "Đăng ký thành công!",
+        description: "Đội ngũ tư vấn sẽ liên hệ trong 24h.",
+        variant: "success",
+      });
+
+      setName("");
+      setEmail("");
+      setPhone("");
+      setErrors({});
+    } catch {
+      toast({
+        title: "Đăng ký thất bại!",
+        description: "Đã có lỗi xảy ra. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -135,9 +157,9 @@ export function RegisterSection() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full mt-2">
-                Đăng Ký Ngay
-                <ArrowRight className="w-5 h-5" />
+              <Button type="submit" className="w-full mt-2" disabled={loading}>
+                {loading ? "Đang xử lý..." : "Đăng Ký Ngay"}
+                {!loading && <ArrowRight className="w-5 h-5" />}
               </Button>
             </form>
           </ScrollReveal>
