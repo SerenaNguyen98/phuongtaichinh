@@ -4,7 +4,9 @@
 
 Trang landing page giới thiệu **khóa học luyện thi chứng chỉ hành nghề chứng khoán** (chứng chỉ Quản Lý Quỹ), thuộc thương hiệu **Phuongtaichinh**.
 
-- **Website**: `index.html` (trang landing đơn trang, 100% client-side)
+- **Framework**: Next.js 15 (App Router, TypeScript)
+- **UI Library**: shadcn/ui (Radix UI + Tailwind CSS)
+- **Website**: `src/app/page.tsx` (trang landing đơn trang, Next.js App Router)
 - **Ngôn ngữ**: Tiếng Việt (`lang="vi"`)
 - **Người dùng mục tiêu**: Người đi làm trong ngành chứng khoán, sinh viên tài chính, người chuẩn bị thi Quản Lý Quỹ
 - **Liên hệ**: Hotline 0907.951.800 | phuongnt91188@gmail.com
@@ -169,17 +171,53 @@ Footer links bắt buộc:
 
 ---
 
-## 7. Checklist Khi Tạo Trang Mới
+## 7. Cấu Trúc Thư Mục
 
 ```
-[ ] Copy tailwind.config colors + fontFamily từ index.html
-[ ] Include Google Fonts (Plus Jakarta Sans + Inter)
-[ ] Include Lucide Icons CDN + gọi lucide.createIcons()
+src/
+├── app/
+│   ├── globals.css       # Tailwind + design tokens + scroll reveal CSS
+│   ├── layout.tsx        # Root layout (metadata, fonts)
+│   └── page.tsx          # Landing page (chuyển từ index.html)
+├── components/
+│   ├── ui/               # shadcn/ui components
+│   │   ├── button.tsx
+│   │   ├── input.tsx
+│   │   ├── label.tsx
+│   │   ├── card.tsx
+│   │   ├── badge.tsx
+│   │   ├── accordion.tsx
+│   │   ├── toast.tsx + use-toast.ts + toaster.tsx
+│   │   ├── separator.tsx
+│   │   ├── dialog.tsx
+│   │   ├── avatar.tsx
+│   │   ├── dropdown-menu.tsx
+│   │   ├── tabs.tsx
+│   │   └── textarea.tsx
+│   └── (sẽ thêm landing page sections ở đây)
+└── lib/
+    └── utils.ts          # cn() helper (shadcn/utils)
+```
+
+## 8. Checklist Khi Tạo Trang Mới
+
+```
+[ ] Copy tailwind.config colors + fontFamily (đã có trong tailwind.config.ts)
+[ ] Import Google Fonts trong globals.css (@import)
+[ ] Import và dùng icon từ lucide-react (thay vì CDN)
 [ ] Navbar: fixed, blur, hamburger cho mobile
 [ ] Footer: brand, liên hệ, newsletter
-[ ] Form inputs: validate + error display + toast feedback
+[ ] Form inputs: dùng shadcn Input + Label, validate + toast feedback
 [ ] Responsive: test trên mobile (375px), tablet (768px), desktop (1200px+)
-[ ] Scroll reveal cho các section chính
+[ ] Scroll reveal cho các section chính (CSS .reveal + JS IntersectionObserver)
 [ ] Điền href tel: và mailto: cho mọi liên kết liên hệ
 [ ] Dark theme: background #090A14, không dùng màu sáng không có trong palette
+```
+
+## 9. Chạy Dự Án
+
+```bash
+npm run dev    # Dev server (localhost:3000)
+npm run build  # Production build
+npm run start  # Production server
 ```
