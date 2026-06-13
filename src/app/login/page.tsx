@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { Mail, Lock, Eye, EyeOff, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -248,7 +249,7 @@ export default function LoginPage() {
 
         {/* Back to Home */}
         <div className="text-center mt-6">
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-2 text-sm text-text-sub hover:text-primary transition-colors duration-200"
           >
@@ -266,7 +267,7 @@ export default function LoginPage() {
               <path d="m15 18-6-6 6-6" />
             </svg>
             Quay lại trang chủ
-          </a>
+          </Link>
         </div>
       </div>
     </div>
