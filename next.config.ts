@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  outputFileTracingRoot: "d:/0. vibe code/phuongtaichinh/phuongtaichinh",
   images: {
     remotePatterns: [
       {
