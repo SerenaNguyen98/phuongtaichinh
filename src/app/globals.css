@@ -67,3 +67,11 @@
   background: rgba(223, 107, 51, 0.3);
   color: #ffffff;
 }
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #DF6B33, #F4A261);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
