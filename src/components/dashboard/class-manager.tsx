@@ -26,7 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
-interface ClassSession {
+export interface ClassSession {
   id: string;
   title: string;
   date: string;
@@ -36,7 +36,7 @@ interface ClassSession {
   color: string;
 }
 
-const mockClasses: ClassSession[] = [
+export const mockClasses: ClassSession[] = [
   { id: "1", title: "Buổi 1: Giới thiệu tổng quan", date: "2026-07-05", time: "19:00 - 21:00", teacher: "Nguyễn Văn A", description: "Tổng quan thị trường chứng khoán Việt Nam và các loại chứng chỉ.", color: "#DF6B33" },
   { id: "2", title: "Buổi 2: Phân tích cơ bản", date: "2026-07-08", time: "19:00 - 21:00", teacher: "Nguyễn Văn A", description: "Đọc báo cáo tài chính, phân tích chỉ số, định giá doanh nghiệp.", color: "#6366F1" },
   { id: "3", title: "Buổi 3: Phân tích kỹ thuật", date: "2026-07-12", time: "19:00 - 21:00", teacher: "Trần Thị B", description: "Mô hình nến, đường xu hướng, RSI, MACD, Bollinger Bands.", color: "#10B981" },
@@ -59,8 +59,12 @@ const MONTHS_VI = [
   "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12",
 ];
 
-export function ClassManager() {
-  const [classes, setClasses] = React.useState<ClassSession[]>(mockClasses);
+interface ClassManagerProps {
+  classes: ClassSession[];
+  onClassesChange: React.Dispatch<React.SetStateAction<ClassSession[]>>;
+}
+
+export function ClassManager({ classes, onClassesChange }: ClassManagerProps) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editingClass, setEditingClass] = React.useState<ClassSession | null>(null);
   const [currentDate, setCurrentDate] = React.useState(new Date(2026, 6, 1));
@@ -140,7 +144,7 @@ export function ClassManager() {
     const color = COLORS[Math.max(0, colorIdx)];
 
     if (editingClass) {
-      setClasses((prev) =>
+      onClassesChange((prev) =>
         prev.map((c) =>
           c.id === editingClass.id ? { ...c, ...form, color } : c
         )
@@ -152,7 +156,7 @@ export function ClassManager() {
         ...form,
         color,
       };
-      setClasses((prev) => [...prev, newClass]);
+      onClassesChange((prev) => [...prev, newClass]);
       toast({ title: "Đã thêm lớp học mới!" });
     }
     setDialogOpen(false);
@@ -160,53 +164,45 @@ export function ClassManager() {
 
   const handleDelete = (id: string) => {
     if (!confirm("Xóa lớp học này?")) return;
-    setClasses((prev) => prev.filter((c) => c.id !== id));
+    onClassesChange((prev) => prev.filter((c) => c.id !== id));
     toast({ title: "Đã xóa lớp học!" });
   };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-2">
-          <h2 className="font-heading font-bold text-lg text-text-main">
-            Quản lý lớp học
-          </h2>
-          <Badge variant="secondary">{classes.length} buổi</Badge>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex rounded-lg border border-border overflow-hidden">
-            <button
-              onClick={() => setView("calendar")}
-              className={cn(
-                "px-3 py-1.5 text-xs font-medium transition-colors",
-                view === "calendar"
-                  ? "bg-primary text-white"
-                  : "bg-bg-card text-text-sub hover:bg-bg"
-              )}
-            >
-              Lịch
-            </button>
-            <button
-              onClick={() => setView("list")}
-              className={cn(
-                "px-3 py-1.5 text-xs font-medium transition-colors",
-                view === "list"
-                  ? "bg-primary text-white"
-                  : "bg-bg-card text-text-sub hover:bg-bg"
-              )}
-            >
-              Danh sách
-            </button>
-          </div>
-          <Button
-            onClick={openAdd}
-            className="bg-primary hover:bg-primary-hover text-white"
+      <div className="flex items-center justify-end flex-wrap gap-2">
+        <div className="flex rounded-lg border border-border overflow-hidden">
+          <button
+            onClick={() => setView("calendar")}
+            className={cn(
+              "px-3 py-1.5 text-xs font-medium transition-colors",
+              view === "calendar"
+                ? "bg-primary text-white"
+                : "bg-bg-card text-text-sub hover:bg-bg"
+            )}
           >
-            <Plus className="w-4 h-4 mr-1.5" />
-            Thêm lớp
-          </Button>
+            Lịch
+          </button>
+          <button
+            onClick={() => setView("list")}
+            className={cn(
+              "px-3 py-1.5 text-xs font-medium transition-colors",
+              view === "list"
+                ? "bg-primary text-white"
+                : "bg-bg-card text-text-sub hover:bg-bg"
+            )}
+          >
+            Danh sách
+          </button>
         </div>
+        <Button
+          onClick={openAdd}
+          className="bg-primary hover:bg-primary-hover text-white"
+        >
+          <Plus className="w-4 h-4 mr-1.5" />
+          Thêm lớp
+        </Button>
       </div>
 
       {/* Calendar View */}

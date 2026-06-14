@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useToast } from "@/components/ui/use-toast";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
 
 export function RegisterSection() {
   const [name, setName] = useState("");
@@ -44,10 +44,31 @@ export function RegisterSection() {
     setLoading(true);
 
     try {
-      await addDoc(collection(db, "customers"), {
+      const timestamp = Date.now();
+      const leadId = `LEAD-${timestamp}`;
+      const customerId = `CUS-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+      // Check for duplicate lead by email
+      const existingLead = await getDocs(
+        query(collection(db, "Lead"), where("email", "==", email.trim()))
+      );
+      if (!existingLead.empty) {
+        toast({
+          title: "Email đã được đăng ký!",
+          description: "Email này đã nằm trong danh sách tư vấn. Vui lòng chờ đội ngũ liên hệ.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      await addDoc(collection(db, "Lead"), {
+        lead_id: leadId,
+        customer_id: customerId,
         name: name.trim(),
         email: email.trim(),
-        phone: phone.trim(),
+        sdt: phone.trim(),
+        lead_status: "new",
         createdAt: serverTimestamp(),
       });
 

@@ -1,8 +1,11 @@
 "use client";
 
+import * as React from "react";
 import { LessonManager } from "@/components/dashboard/lesson-manager";
+import { type Lesson, initialLessons } from "@/components/dashboard/lesson-manager";
 
 export default function LessonsPage() {
+  const [lessons, setLessons] = React.useState<Lesson[]>(initialLessons);
   return (
     <div className="p-6 lg:p-8 min-h-screen">
       <div className="mb-6">
@@ -13,7 +16,7 @@ export default function LessonsPage() {
           Thêm, sửa, xóa và sắp xếp thứ tự các bài học trong khóa học.
         </p>
       </div>
-      <LessonManager />
+      <LessonManager lessons={lessons} onLessonsChange={setLessons} />
     </div>
   );
 }

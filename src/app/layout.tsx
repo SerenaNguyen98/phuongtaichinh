@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className="dark" suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Toaster />
       </body>

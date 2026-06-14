@@ -24,7 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
-interface Lesson {
+export interface Lesson {
   id: string;
   title: string;
   description: string;
@@ -32,7 +32,7 @@ interface Lesson {
   duration?: string;
 }
 
-const initialLessons: Lesson[] = [
+export const initialLessons: Lesson[] = [
   {
     id: "1",
     title: "Buổi 1: Giới thiệu tổng quan thị trường chứng khoán",
@@ -99,8 +99,12 @@ const initialLessons: Lesson[] = [
   },
 ];
 
-export function LessonManager() {
-  const [lessons, setLessons] = React.useState<Lesson[]>(initialLessons);
+interface LessonManagerProps {
+  lessons: Lesson[];
+  onLessonsChange: React.Dispatch<React.SetStateAction<Lesson[]>>;
+}
+
+export function LessonManager({ lessons, onLessonsChange }: LessonManagerProps) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editingLesson, setEditingLesson] = React.useState<Lesson | null>(null);
   const [form, setForm] = React.useState({ title: "", description: "", duration: "" });
@@ -137,7 +141,7 @@ export function LessonManager() {
     if (!validateForm()) return;
 
     if (editingLesson) {
-      setLessons((prev) =>
+      onLessonsChange((prev) =>
         prev.map((l) =>
           l.id === editingLesson.id
             ? { ...l, title: form.title, description: form.description, duration: form.duration }
@@ -153,7 +157,7 @@ export function LessonManager() {
         order: lessons.length + 1,
         duration: form.duration || "90 phút",
       };
-      setLessons((prev) => [...prev, newLesson]);
+      onLessonsChange((prev) => [...prev, newLesson]);
       toast({ title: "Đã thêm bài học mới!" });
     }
     setDialogOpen(false);
@@ -161,12 +165,12 @@ export function LessonManager() {
 
   const handleDelete = (id: string) => {
     if (!confirm("Xóa bài học này?")) return;
-    setLessons((prev) => prev.filter((l) => l.id !== id));
+    onLessonsChange((prev) => prev.filter((l) => l.id !== id));
     toast({ title: "Đã xóa bài học!" });
   };
 
   const moveLesson = (id: string, direction: "up" | "down") => {
-    setLessons((prev) => {
+    onLessonsChange((prev) => {
       const idx = prev.findIndex((l) => l.id === id);
       if (idx === -1) return prev;
       const newIdx = direction === "up" ? idx - 1 : idx + 1;
@@ -179,13 +183,7 @@ export function LessonManager() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h2 className="font-heading font-bold text-lg text-text-main">
-            Quản lý bài học
-          </h2>
-          <Badge variant="secondary">{lessons.length} bài</Badge>
-        </div>
+      <div className="flex items-center justify-end">
         <Button
           onClick={openAdd}
           className="bg-primary hover:bg-primary-hover text-white"

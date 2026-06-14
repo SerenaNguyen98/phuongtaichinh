@@ -1,8 +1,11 @@
 "use client";
 
+import * as React from "react";
 import { ClassManager } from "@/components/dashboard/class-manager";
+import { type ClassSession, mockClasses } from "@/components/dashboard/class-manager";
 
 export default function ClassesPage() {
+  const [classes, setClasses] = React.useState<ClassSession[]>(mockClasses);
   return (
     <div className="p-6 lg:p-8 min-h-screen">
       <div className="mb-6">
@@ -13,7 +16,7 @@ export default function ClassesPage() {
           Xem lịch học trực quan dạng calendar và quản lý thông tin các buổi học.
         </p>
       </div>
-      <ClassManager />
+      <ClassManager classes={classes} onClassesChange={setClasses} />
     </div>
   );
 }

@@ -7,17 +7,17 @@ import {
   Users,
   BookOpen,
   CalendarDays,
-  LayoutDashboard,
   ChevronLeft,
   TrendingUp,
+  BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   {
-    label: "Tổng quan",
+    label: "Báo cáo đào tạo",
     href: "/dashboard",
-    icon: LayoutDashboard,
+    icon: BarChart3,
   },
   {
     label: "Quản lý học viên",
