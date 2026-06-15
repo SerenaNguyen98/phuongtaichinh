@@ -136,9 +136,7 @@ export function CustomerTable() {
             return { id: doc.id, ...d, sdt } as Student;
           })
           .sort((a, b) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const ta = (a.createdAt as any)?.toMillis?.() ?? (typeof a.createdAt === "number" ? a.createdAt : 0);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const tb = (b.createdAt as any)?.toMillis?.() ?? (typeof b.createdAt === "number" ? b.createdAt : 0);
             return tb - ta;
           });
